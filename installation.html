@@ -57,11 +57,6 @@
   <div class="section" id="software-to-install-for-the-class">
 <span id="installation"></span><h1>Software to install for the class<a class="headerlink" href="#software-to-install-for-the-class" title="Permalink to this headline">¶</a></h1>
 <p>You will need Python and some Python scientific libraries installed.</p>
-<p>If you already have some large Python packaging system installed, such as the
-<cite>Anaconda</cite> or the <a class="reference external" href="http://www.enthought.com/products/epd.php">Enthought Python Distribution</a>, you can stick with that,
-it should provide the dependencies you need.  To make sure, see the relevant
-instructions below for checking your installation.  If you don&#8217;t have
-something like that (most of you won&#8217;t), please read on...</p>
 <div class="section" id="if-you-are-using-windows">
 <h2>If you are using Windows<a class="headerlink" href="#if-you-are-using-windows" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="download-and-install-python-and-packages-using-python-x-y">
@@ -112,6 +107,9 @@ Windows Command Prompt&#8221;.</p>
 </div>
 <div class="section" id="if-you-are-using-osx">
 <h2>If you are using OSX<a class="headerlink" href="#if-you-are-using-osx" title="Permalink to this headline">¶</a></h2>
+<p>OSX ships with a version of Python that you will find in <tt class="docutils literal"><span class="pre">/usr/bin/python</span></tt>.
+For reasons <a class="reference external" href="https://github.com/MacPython/wiki/wiki/Which-Python">explained here</a> you should use another
+installation of Python for your own work.</p>
 <div class="section" id="download-and-install-python">
 <h3>Download and install Python<a class="headerlink" href="#download-and-install-python" title="Permalink to this headline">¶</a></h3>
 <p>Download the latest version of Python 2 from <a class="reference external" href="https://www.python.org/downloads/">Python downloads</a>.  The current version at the time of
@@ -157,11 +155,15 @@ git.</p>
 </div>
 <div class="section" id="if-you-are-on-osx-10-8-mountain-lion-or-below">
 <h4>If you are on OSX 10.8 (Mountain lion) or below<a class="headerlink" href="#if-you-are-on-osx-10-8-mountain-lion-or-below" title="Permalink to this headline">¶</a></h4>
-<p>Install git from the <a class="reference external" href="http://sourceforge.net/projects/git-osx-installer/files/git-2.2.1-intel-universal-snow-leopard.dmg/download">Git snow-leopard installer</a>
+<p>Install git from this old copy of the <a class="reference external" href="http://nipy.bic.berkeley.edu/pna/archives/git-1.8.3-intel-universal-snow-leopard.dmg">Git Snow Leopard installer</a>
 by doing the usual routine of double clicking the <tt class="docutils literal"><span class="pre">.dmg</span></tt> file then
 double-clicking the <tt class="docutils literal"><span class="pre">.pkg</span></tt> installer.  Check the installation has worked by
-closing Terminal.app and opening again, and typing <tt class="docutils literal"><span class="pre">git</span></tt> at the command
-line.</p>
+closing Terminal.app and opening again, and typing <tt class="docutils literal"><span class="pre">git</span></tt> at the command line.</p>
+<p>The reason we suggest using this old installer is that some people have had
+problems with the latest (version 2.2.1 at time of writing) git Snow Leopard
+<tt class="docutils literal"><span class="pre">.dmg</span></tt> installer from <a class="reference external" href="http://sourceforge.net/projects/git-osx-installer/files">http://sourceforge.net/projects/git-osx-installer/files</a>.</p>
+<p>If you still have problems, please follow the instructions on <a class="reference external" href="http://gitforums.org/forum/main-category/main-forum/1264-illegal-instruction-4-when-running-git-on-osx-10-7-5?p=1265#post1265">this forum post</a>
+(thanks to Ana Navarro Cebrian for tracking this down).</p>
 </div>
 </div>
 </div>
@@ -193,6 +195,28 @@ sudo yum install -y git
 <p>Check the installation with:</p>
 <div class="highlight-python"><div class="highlight"><pre>wget https://nipy.bic.berkeley.edu/pna/check_pna_install.py
 python check_pna_install.py
+</pre></div>
+</div>
+<p>If you have any problems, follow the printed instructions after you run the
+script, and let us know (see <a class="reference internal" href="#installation-problems"><em>Installation problems</em></a>).</p>
+</div>
+<div class="section" id="if-you-have-already-have-python-from-anaconda-or-enthought-canopy">
+<h2>If you have already have Python from Anaconda or Enthought Canopy<a class="headerlink" href="#if-you-have-already-have-python-from-anaconda-or-enthought-canopy" title="Permalink to this headline">¶</a></h2>
+<p>If you already have some large Python packaging system installed, such as the
+<cite>Anaconda</cite> or the <a class="reference external" href="http://www.enthought.com/products/epd.php">Enthought Python Distribution</a>, you will need to install
+one extra package - <a class="reference external" href="http://nipy.org/nibabel">nibabel</a>.</p>
+<p>First make sure you have the <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> (the Python package manager) installed on
+your system, by typing <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> from the command line.  You should see the help
+for pip.  Then install nibabel with:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install nibabel
+</pre></div>
+</div>
+<p>Download (right-click, save as) this Python script file to your computer:
+<a class="reference external" href="https://nipy.bic.berkeley.edu/pna/check_pna_install.py">https://nipy.bic.berkeley.edu/pna/check_pna_install.py</a></p>
+<p>Finally, check your installation by opening your command line application,
+changing into the directory containing the <tt class="docutils literal"><span class="pre">check_pna_install.py</span></tt> script,
+and running the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>python check_pna_install.py
 </pre></div>
 </div>
 <p>If you have any problems, follow the printed instructions after you run the
@@ -262,6 +286,7 @@ course software installed.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#if-you-are-using-linux">If you are using Linux</a></li>
+<li><a class="reference internal" href="#if-you-have-already-have-python-from-anaconda-or-enthought-canopy">If you have already have Python from Anaconda or Enthought Canopy</a></li>
 <li><a class="reference internal" href="#if-you-don-t-want-to-do-an-install-on-your-machine-yet">If you don&#8217;t want to do an install on your machine yet</a></li>
 <li><a class="reference internal" href="#installation-problems">Installation problems</a></li>
 </ul>
