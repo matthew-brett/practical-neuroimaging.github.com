@@ -61,16 +61,18 @@
 <h2>If you are using Windows<a class="headerlink" href="#if-you-are-using-windows" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="download-and-install-python-and-packages-using-python-x-y">
 <h3>Download and install Python and packages using Python (X,Y)<a class="headerlink" href="#download-and-install-python-and-packages-using-python-x-y" title="Permalink to this headline">¶</a></h3>
-<p>Go the the Python (X,Y) website: <a class="reference external" href="https://code.google.com/p/pythonxy/">https://code.google.com/p/pythonxy/</a></p>
-<p>Click on the Downloads link to take you to the Downloads page
-(<a class="reference external" href="https://code.google.com/p/pythonxy/wiki/Downloads">https://code.google.com/p/pythonxy/wiki/Downloads</a>).</p>
+<p>Go the the <a class="reference external" href="https://code.google.com/p/pythonxy/">Python(X,Y)</a> website. (If you happen to be following this course
+from a country <a class="reference external" href="http://nipyworld.blogspot.com/2011/07/why-you-shouldnt-use-google-code.html">blocked by Google code</a>, download Python(X,Y from the
+<a class="reference external" href="http://www.mirrorservice.org/sites/pythonxy.com">Python(X,Y) UK mirror</a>).</p>
+<p>From the Google code website, click on the Downloads link to take you to the
+Downloads page (<a class="reference external" href="https://code.google.com/p/pythonxy/wiki/Downloads">https://code.google.com/p/pythonxy/wiki/Downloads</a>).</p>
 <p>Click on the link for the ConnectMV mirror (it appears to be in Canada, where
 the other download links are in Europe).</p>
 <p>Download the Python (X,Y) exe file, and double click to install.</p>
 <p>Accept all the defaults.</p>
 </div>
 <div class="section" id="use-pip-to-install-the-nibabel-package">
-<h3>Use pip to install the nibabel package<a class="headerlink" href="#use-pip-to-install-the-nibabel-package" title="Permalink to this headline">¶</a></h3>
+<span id="python-xy-pip"></span><h3>Use pip to install the nibabel package<a class="headerlink" href="#use-pip-to-install-the-nibabel-package" title="Permalink to this headline">¶</a></h3>
 <p>Open the <tt class="docutils literal"><span class="pre">cmd</span></tt> program program by clicking on the Windows Start button and
 typing <tt class="docutils literal"><span class="pre">cmd</span></tt> (Return).</p>
 <p>At the prompt, type:</p>
@@ -155,15 +157,16 @@ git.</p>
 </div>
 <div class="section" id="if-you-are-on-osx-10-8-mountain-lion-or-below">
 <h4>If you are on OSX 10.8 (Mountain lion) or below<a class="headerlink" href="#if-you-are-on-osx-10-8-mountain-lion-or-below" title="Permalink to this headline">¶</a></h4>
-<p>Install git from this old copy of the <a class="reference external" href="http://nipy.bic.berkeley.edu/pna/archives/git-1.8.3-intel-universal-snow-leopard.dmg">Git Snow Leopard installer</a>
-by doing the usual routine of double clicking the <tt class="docutils literal"><span class="pre">.dmg</span></tt> file then
-double-clicking the <tt class="docutils literal"><span class="pre">.pkg</span></tt> installer.  Check the installation has worked by
-closing Terminal.app and opening again, and typing <tt class="docutils literal"><span class="pre">git</span></tt> at the command line.</p>
-<p>The reason we suggest using this old installer is that some people have had
-problems with the latest (version 2.2.1 at time of writing) git Snow Leopard
-<tt class="docutils literal"><span class="pre">.dmg</span></tt> installer from <a class="reference external" href="http://sourceforge.net/projects/git-osx-installer/files">http://sourceforge.net/projects/git-osx-installer/files</a>.</p>
-<p>If you still have problems, please follow the instructions on <a class="reference external" href="http://gitforums.org/forum/main-category/main-forum/1264-illegal-instruction-4-when-running-git-on-osx-10-7-5?p=1265#post1265">this forum post</a>
-(thanks to Ana Navarro Cebrian for tracking this down).</p>
+<p>Install git from this <a class="reference external" href="http://mackyle.github.io/git-osx-installer/">git OSX installer</a> page by doing the usual routine of
+double clicking the <tt class="docutils literal"><span class="pre">.dmg</span></tt> file then double-clicking the <tt class="docutils literal"><span class="pre">.pkg</span></tt> installer.
+Check the installation has worked by closing Terminal.app and opening again,
+and typing <tt class="docutils literal"><span class="pre">git</span></tt> at the command line.</p>
+<p>The reason we suggest using this installer rather than the more standard git
+Snow Leopard <tt class="docutils literal"><span class="pre">.dmg</span></tt> installer from
+<a class="reference external" href="http://sourceforge.net/projects/git-osx-installer/files">http://sourceforge.net/projects/git-osx-installer/files</a> is that <a class="reference external" href="http://gitforums.org/forum/main-category/main-forum/1264-illegal-instruction-4-when-running-git-on-osx-10-7-5">some people</a>
+have reported <tt class="docutils literal"><span class="pre">Illegal</span> <span class="pre">instruction:</span> <span class="pre">4</span></tt> errors when trying to run git from
+this standard installer.  Thanks to Ana Navarro Cebrian for tracking this
+down.</p>
 </div>
 </div>
 </div>
@@ -203,11 +206,12 @@ script, and let us know (see <a class="reference internal" href="#installation-p
 <div class="section" id="if-you-have-already-have-python-from-anaconda-or-enthought-canopy">
 <h2>If you have already have Python from Anaconda or Enthought Canopy<a class="headerlink" href="#if-you-have-already-have-python-from-anaconda-or-enthought-canopy" title="Permalink to this headline">¶</a></h2>
 <p>If you already have some large Python packaging system installed, such as the
-<cite>Anaconda</cite> or the <a class="reference external" href="http://www.enthought.com/products/epd.php">Enthought Python Distribution</a>, you will need to install
-one extra package - <a class="reference external" href="http://nipy.org/nibabel">nibabel</a>.</p>
-<p>First make sure you have the <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> (the Python package manager) installed on
-your system, by typing <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> from the command line.  You should see the help
-for pip.  Then install nibabel with:</p>
+<cite>Anaconda</cite>, <a class="reference external" href="https://www.enthought.com/products/canopy/">Enthought Canopy</a> or <a class="reference external" href="https://code.google.com/p/pythonxy/">Python(X,Y)</a>, you will need to install
+one extra package - <a class="reference external" href="http://nipy.org/nibabel">nibabel</a>.  If you are using Python(X,Y) then go to the
+<a class="reference internal" href="#python-xy-pip"><em>Use pip to install the nibabel package</em></a> section for instructions.  Otherwise, please read on.</p>
+<p>First make sure you have <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> (the Python package manager) installed on your
+system, by typing <a class="reference external" href="http://pypi.python.org/pypi/pip">pip</a> from the command line.  You should see the help for
+pip.  Then install nibabel with:</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install nibabel
 </pre></div>
 </div>
