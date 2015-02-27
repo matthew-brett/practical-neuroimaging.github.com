@@ -59,13 +59,85 @@
   <div class="section" id="day-2-images-as-arrays-and-plotting">
 <h1>Day 2: images as arrays and plotting<a class="headerlink" href="#day-2-images-as-arrays-and-plotting" title="Permalink to this headline">¶</a></h1>
 <p>2 / 27 / 2015</p>
-<p>Reading:</p>
+<div class="section" id="prior">
+<h2>Prior<a class="headerlink" href="#prior" title="Permalink to this headline">¶</a></h2>
 <p>These two tutorial pages are from the <a class="reference external" href="http://scipy-lectures.github.io">scipy lecture notes</a>:</p>
 <ul class="simple">
 <li>The <a class="reference external" href="http://scipy-lectures.github.io/intro/numpy/array_object.html">numpy array object</a></li>
 <li><a class="reference external" href="http://scipy-lectures.github.io/intro/numpy/operations.html">Array operations</a></li>
 </ul>
-<p>Day:</p>
+</div>
+<div class="section" id="day">
+<h2>Day<a class="headerlink" href="#day" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-scikit-image">
+<h3>Installing scikit-image<a class="headerlink" href="#installing-scikit-image" title="Permalink to this headline">¶</a></h3>
+<p>You might want to install scikit-image – the image processing toolkit for
+Python.  You will need it for the last (and optional) part of the last
+exercise today.</p>
+<ul>
+<li><p class="first">If you have Anaconda, the package is already installed;</p>
+</li>
+<li><p class="first">If you have Python(X,Y) on Windows, download and run
+<a class="reference external" href="http://nipy.bic.berkeley.edu/pna/archives/scikits.image-0.10.1-7_py27.exe">http://nipy.bic.berkeley.edu/pna/archives/scikits.image-0.10.1-7_py27.exe</a>;</p>
+</li>
+<li><p class="first">If you have OSX, and do not have Anaconda (for example, if you followed the
+instructions for OSX install for this class) then:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install -U scikit-image
+</pre></div>
+</div>
+</li>
+<li><p class="first">If you have Linux, first – ask your friendly instructor, because Linux
+systems differ more from each other than OSX and Windows.  If we aren&#8217;t
+around for some reason, then:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">If you are on Ubuntu or Debian 64-bit, try:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo pip install --no-index -f http://travis-wheels.scikit-image.org scikit-image
+</pre></div>
+</div>
+</li>
+<li><p class="first">Otherwise, or if that doesn&#8217;t work:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo pip install -U six
+sudo pip install -U scikit-image
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>As usual, if you have any problems, we are very happy to help.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction-to-day-2">
+<h3>Introduction to day 2<a class="headerlink" href="#introduction-to-day-2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="some-new-python-stuff">
+<h4>Some new Python stuff<a class="headerlink" href="#some-new-python-stuff" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Tuples are immutable lists;</li>
+<li>Mutable and immutable in Python;</li>
+<li>Making a tuple with a single element;</li>
+<li>List comprehensions are short-cut for loops.</li>
+</ul>
+</div>
+<div class="section" id="revision-from-homework">
+<h4>Revision from homework<a class="headerlink" href="#revision-from-homework" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Numpy is a package (and a module);</li>
+<li>Getting help with dot &lt;tab&gt; in IPython and <tt class="docutils literal"><span class="pre">np.lookfor</span></tt>;</li>
+<li>Matplotlib is a package (and a module);</li>
+<li>Showing an array as an image with <cite>imshow</cite>;</li>
+<li>Plotting a line from an array with <cite>plot</cite>;</li>
+<li>Slicing arrays;</li>
+<li>Copies and views;</li>
+<li>Indexing arrays with masks;</li>
+<li>Numerical operations in numpy;</li>
+<li><tt class="docutils literal"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">==</span> <span class="pre">!=</span> <span class="pre">&gt;</span> <span class="pre">&lt;</span> <span class="pre">&gt;=</span> <span class="pre">&lt;=</span></tt> are always elementwise;</li>
+<li>Transpose</li>
+<li>Reshape</li>
+</ul>
+</div>
+<div class="section" id="some-useful-background-resources">
+<h4>Some useful background resources<a class="headerlink" href="#some-useful-background-resources" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li>What is an image? e.g.
 <a class="reference external" href="http://nbviewer.ipython.org/urls/bitbucket.org/matthewbrett/talks/raw/master/processing_i/what_is_an_image.ipynb">http://nbviewer.ipython.org/urls/bitbucket.org/matthewbrett/talks/raw/master/processing_i/what_is_an_image.ipynb</a></li>
@@ -74,8 +146,10 @@
 <li>Diagnostics e.g.
 <a class="reference external" href="http://nbviewer.ipython.org/urls/bitbucket.org/matthewbrett/talks/raw/master/processing_i/diagnostics.ipynb">http://nbviewer.ipython.org/urls/bitbucket.org/matthewbrett/talks/raw/master/processing_i/diagnostics.ipynb</a></li>
 <li>Mean, standard deviation, variance over time</li>
-<li>Text editor competition.</li>
 </ul>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -84,6 +158,24 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Day 2: images as arrays and plotting</a><ul>
+<li><a class="reference internal" href="#prior">Prior</a></li>
+<li><a class="reference internal" href="#day">Day</a><ul>
+<li><a class="reference internal" href="#installing-scikit-image">Installing scikit-image</a></li>
+<li><a class="reference internal" href="#introduction-to-day-2">Introduction to day 2</a><ul>
+<li><a class="reference internal" href="#some-new-python-stuff">Some new Python stuff</a></li>
+<li><a class="reference internal" href="#revision-from-homework">Revision from homework</a></li>
+<li><a class="reference internal" href="#some-useful-background-resources">Some useful background resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="day1.html"
                         title="previous chapter">Day 1 : introducing Python</a></p>
