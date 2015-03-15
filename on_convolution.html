@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Course on Practical Neuroimaging in Python &mdash; Practical neuroimaging analysis</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="Practical neuroimaging analysis" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+<big><big><big><li><a href="index.html">Home</a> |&nbsp;</li>
+  <li><a href="https://github.com/practical-neuroimaging/pna-notebooks">Notebooks</a> |&nbsp;</li>
+  <li><a href="http://nipy.bic.berkeley.edu/pna">Data</a> |&nbsp;</li>
+  <li><a href="https://calmail.berkeley.edu/manage/list/listinfo/practical_fmri@lists.berkeley.edu">Mailing list</a> |&nbsp;</li></big></big></big>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="convolution">
+<h1>Convolution<a class="headerlink" href="#convolution" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="neural-and-hemodynamic-models">
+<h2>Neural and hemodynamic models<a class="headerlink" href="#neural-and-hemodynamic-models" title="Permalink to this headline">¶</a></h2>
+<p>In functional MRI, we often have the subjects do a task in the scanner.  For
+example, we might have the subject lying looking at a fixation cross on the
+screen for most of the time, and sometimes show a very brief burst of visual
+stimulation, such as a flashing checkerboard.</p>
+<p>We will call each burst of stimulation an <em>event</em>.</p>
+<p>We know when these events happened.</p>
+<div class="section" id="the-neural-model">
+<h3>The neural model<a class="headerlink" href="#the-neural-model" title="Permalink to this headline">¶</a></h3>
+<p>Our next step is to predict what profile of neural activity the event may have
+caused in the brain.</p>
+<p>For example, in this case, with a single stimulation, we might predict that,
+as soon as the visual stimulation went on, the cells in the visual cortex
+instantly increased their firing, and kept firing at the same rate while the
+stimulation was on.</p>
+<p>In that case, our <em>neural</em> model of an event starting at 4 seconds, lasting 5
+seconds, might look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">n_time_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+<span class="n">neural_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_time_points</span><span class="p">)</span>
+<span class="n">neural_signal</span><span class="p">[(</span><span class="n">times</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">times</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">neural_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;neural signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Neural model for 5 second event starting at time 4&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-1.png">png</a>, <a class="reference external" href=".//on_convolution-1.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-1.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-1.png" src="_images/on_convolution-1.png" />
+</div>
+<p>Of course we could have had another neural model, with the activity gradually
+increasing, or starting high and then dropping, but let us stick to this
+simple model for now.</p>
+</div>
+<div class="section" id="the-hemodynamic-model">
+<h3>The hemodynamic model<a class="headerlink" href="#the-hemodynamic-model" title="Permalink to this headline">¶</a></h3>
+<p>The signal we have actually collected in FMRI is not neural signal, but
+<a class="reference external" href="https://en.wikipedia.org/wiki/Blood-oxygen-level_dependent">blood-oxygen-level dependent</a> signal (BOLD).  The BOLD signal depends on the
+changes in blood flow, and responds relatively slowly to changes in neuronal
+activity.  For this reason the BOLD response is also often known as the
+hemodynamic response.  The BOLD (hemodynamic) signal to a very quick on-off
+neural event starting at time 0, looks something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">afni_hrf</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="s">&quot;The hemodynamic response from the AFNI software package&quot;</span>
+    <span class="k">return</span> <span class="n">t</span> <span class="o">**</span> <span class="mf">8.6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span> <span class="o">/</span> <span class="mf">0.547</span><span class="p">)</span>
+
+<span class="n">hrf_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">hrf_signal</span> <span class="o">=</span> <span class="n">afni_hrf</span><span class="p">(</span><span class="n">hrf_times</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrf_times</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;BOLD signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Estimated BOLD signal for event at time 0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-2.png">png</a>, <a class="reference external" href=".//on_convolution-2.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-2.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-2.png" src="_images/on_convolution-2.png" />
+</div>
+<p>This is the hemodynamic response to a very short neural event.  It is
+therefore also called the <em>hemodynamic response function</em> (HRF).</p>
+<p>We know that the neural signal will be transformed by this slower
+hemodynamic effect.  So, how do we use this information to get from a model of
+the time course of the neural signal to a model of the BOLD signal?</p>
+<p>This is the where <a class="reference external" href="https://en.wikipedia.org/wiki/Convolution">convolution</a> steps in.</p>
+</div>
+<div class="section" id="convolution-and-the-impulse-response">
+<h3>Convolution and the impulse response<a class="headerlink" href="#convolution-and-the-impulse-response" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s simplify a little by pretending that the event was really short.  Call
+this event – an <em>impulse</em>.  This simplifies our neural model to a single
+spike in time instead of a sustained rise (or box-car).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">neural_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+<span class="n">i_time_4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">times</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># index of value 4 in &quot;times&quot;</span>
+<span class="n">neural_signal</span><span class="p">[</span><span class="n">i_time_4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># A single spike at time == 4</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">neural_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;neural signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Neural model for very brief event at time 4&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-3.png">png</a>, <a class="reference external" href=".//on_convolution-3.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-3.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-3.png" src="_images/on_convolution-3.png" />
+</div>
+<p>So, this is our <em>impulse</em>.  Above we see the hemodynamic response to a very
+short impulse like this.  The HRF is the response in the FMRI signal to a very
+brief neural impulse.  In signal processing terms the HRF would be the
+response to the impulse, or <a class="reference external" href="impulseresponse">impulse response function</a>
+(IRF).</p>
+<p>The idea of convolution is this: we assume that every time there is an impulse
+in the <em>input signal</em> (in our case, the neural signal), then there will be an
+IRF evoked in the <em>output signal</em>.</p>
+<p>We assume there is no difference in the relationship of the impulse to the
+response over time – one impulse always generates the same response.  This
+is the <em>time invariant</em> assumption.</p>
+<p>We assume that, if two evoked responses overlap, then we get the resulting output signal by
+adding up the evoked responses for each time point.  This is the <em>linear</em>
+assumption.</p>
+<p>If we make both of these assumptions then we have a <em>linear time-invariant</em>
+system, and this is the system for which convolution can do our work for us.</p>
+<p>We will see that the mathematical operation of <em>convolving</em> the neural input
+signal with the HRF gives us a prediction of the hemodynamic output signal, as
+long as we can make the <em>linear</em> and <em>time-invariant</em> assumptions.</p>
+</div>
+<div class="section" id="convolution-as-adding-responses">
+<h3>Convolution as adding responses<a class="headerlink" href="#convolution-as-adding-responses" title="Permalink to this headline">¶</a></h3>
+<p>The principle of convolution is very simple.  For every impulse in the input
+signal, we add a matching copy of the IRF to the output signal.</p>
+<p>In the simplest case we might have a very brief neural impulse as in the plot
+above.</p>
+<p>Convolution will give us one copy of the IRF (HRF) in the output signal,
+starting at the position of the impulse.</p>
+<p>For now we will do the convolution with the numpy <tt class="docutils literal"><span class="pre">convolve</span></tt> routine without
+further explanation so you can see the output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bold_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)[:</span><span class="n">n_time_points</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">bold_signal</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;bold signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Output BOLD signal predicted by convolution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-4.png">png</a>, <a class="reference external" href=".//on_convolution-4.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-4.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-4.png" src="_images/on_convolution-4.png" />
+</div>
+<p>The output is exactly the same as if we had added a time-shifted copy of the
+HRF to a vector of zeros.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">n_hrf_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hrf_signal</span><span class="p">)</span>
+<span class="n">bold_more_simple</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_time_points</span><span class="p">)</span>
+<span class="n">bold_more_simple</span><span class="p">[</span><span class="n">i_time_4</span><span class="p">:</span><span class="n">i_time_4</span> <span class="o">+</span> <span class="n">n_hrf_points</span><span class="p">]</span> <span class="o">=</span> <span class="n">hrf_signal</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bold_more_simple</span> <span class="o">==</span> <span class="n">bold_signal</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now let&#8217;s say we have three impulses, at 4, 10, and 30 seconds:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">times_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">n_time_points_3</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times_3</span><span class="p">)</span>
+<span class="n">neural_signal_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_time_points_3</span><span class="p">)</span>
+<span class="n">i_time_4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">times_3</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># index of value 4 in &quot;times_3&quot;</span>
+<span class="n">i_time_10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">times_3</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># index of value 10 in &quot;times_3&quot;</span>
+<span class="n">i_time_30</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">times_3</span> <span class="o">==</span> <span class="mi">30</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># index of value 30 in &quot;times_3&quot;</span>
+<span class="n">neural_signal_3</span><span class="p">[</span><span class="n">i_time_4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># A single spike at time == 4</span>
+<span class="n">neural_signal_3</span><span class="p">[</span><span class="n">i_time_10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># A single spike at time == 10</span>
+<span class="n">neural_signal_3</span><span class="p">[</span><span class="n">i_time_30</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># A single spike at time == 30</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times_3</span><span class="p">,</span> <span class="n">neural_signal_3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;neural signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Neural model for very brief events at times 4, 10, 30&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-6.png">png</a>, <a class="reference external" href=".//on_convolution-6.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-6.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-6.png" src="_images/on_convolution-6.png" />
+</div>
+<p>The convolution is the same as taking one HRF offset by 4 seconds, one by 10
+seconds and one by 30 seconds, and summing them up:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bold_signal_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal_3</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)[:</span><span class="n">n_time_points_3</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times_3</span><span class="p">,</span> <span class="n">bold_signal_3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;bold signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Output BOLD signal for 3 events predicted by convolution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-7.png">png</a>, <a class="reference external" href=".//on_convolution-7.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-7.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-7.png" src="_images/on_convolution-7.png" />
+</div>
+<p>Now say that the second event, at 10 seconds has twice the amplitude of the
+events at 4 and 30 seconds:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">neural_signal_3</span><span class="p">[</span><span class="n">i_time_10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c"># A bigger spike at time == 10</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times_3</span><span class="p">,</span> <span class="n">neural_signal_3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;neural signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Neural model for larger event at 10 seconds&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-8.png">png</a>, <a class="reference external" href=".//on_convolution-8.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-8.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-8.png" src="_images/on_convolution-8.png" />
+</div>
+<p>Now the convolution is the same as adding:</p>
+<ul class="simple">
+<li>the HRF offset to 4 seconds and scaled by 1;</li>
+<li>the HRF offset to 10 seconds and scaled by 2;</li>
+<li>the HRF offset to 30 seconds and scaled by 1;</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bold_signal_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal_3</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)[:</span><span class="n">n_time_points_3</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times_3</span><span class="p">,</span> <span class="n">bold_signal_3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;bold signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Output BOLD signal for larger event at 10 seconds&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-9.png">png</a>, <a class="reference external" href=".//on_convolution-9.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-9.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-9.png" src="_images/on_convolution-9.png" />
+</div>
+</div>
+<div class="section" id="convolution-rephrased">
+<h3>Convolution rephrased<a class="headerlink" href="#convolution-rephrased" title="Permalink to this headline">¶</a></h3>
+<p>The general principle of the convolution is this:</p>
+<ul class="simple">
+<li>Start with a output vector that is a vector of zeros</li>
+<li>Iterate over each index in the <em>input vector</em> (in our case, the neural
+signal);</li>
+<li>Take the value of the input at this index, and multiply by the IRF (in our
+case, the HRF) – call this the <em>scaled IRF vector</em>.</li>
+<li>Add the scaled IRF vector to the output vector, with the first value in the
+the scaled IRF vector added at the current index, the next at the next index
+and so on.</li>
+</ul>
+<p>Imagine the input vector has N elements, and the IRF has M elements.</p>
+<p>Notice that, when the iteration gets to the last index of the <em>input vector</em>
+(index == N-1), the scaled IRF vector will, as ever, be M points long.  If the
+output vector is the same length as the input vector, we can add only the
+first point of the new scaled IRF vector to the last point of the output
+vector, but all the subsequent values of the scaled IRF vector have no
+corresponding index in the output.  The way to solve this is to extend the
+output vector by the necessary M-1 points, so the output vector from a default
+convolution is N + M - 1 elements long:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">default_convolved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal_3</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">default_convolved</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_time_points_3</span> <span class="o">+</span> <span class="n">n_hrf_points</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">default_convolved</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">neural_signal_3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">hrf_signal</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>The algorithm for convolution is clearer in actual code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># The output is N + M - 1 long</span>
+<span class="n">n_output</span> <span class="o">=</span> <span class="n">n_time_points_3</span> <span class="o">+</span> <span class="n">n_hrf_points</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_output</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_time_points_3</span><span class="p">):</span>
+    <span class="n">neural_value</span> <span class="o">=</span> <span class="n">neural_signal_3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">scaled_irf</span> <span class="o">=</span> <span class="n">neural_value</span> <span class="o">*</span> <span class="n">hrf_signal</span>
+    <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n_hrf_points</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n_hrf_points</span><span class="p">]</span> <span class="o">+</span> <span class="n">scaled_irf</span>
+<span class="n">corresponding_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_output</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">corresponding_times</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-11.png">png</a>, <a class="reference external" href=".//on_convolution-11.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-11.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-11.png" src="_images/on_convolution-11.png" />
+</div>
+<p>Notice that this last plot has the same values as the previous plot, but with
+a 20 (-0.1) second tail at the end, caused by the M-1 extension in the output.</p>
+</div>
+<div class="section" id="what-happens-with-a-box-car-instead-of-an-impulse">
+<h3>What happens with a box-car instead of an impulse?<a class="headerlink" href="#what-happens-with-a-box-car-instead-of-an-impulse" title="Permalink to this headline">¶</a></h3>
+<p>We started off with a neural model where the nerves turned on at time == 4
+seconds and stayed on at the same level for 5 seconds.</p>
+<p>What would convolution to this signal?</p>
+<p>You can now predict what it will do, but here is what it looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">neural_signal_5s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_time_points</span><span class="p">)</span>
+<span class="n">neural_signal_5s</span><span class="p">[(</span><span class="n">times</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">times</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">bold_signal_5s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal_5s</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)[:</span><span class="n">n_time_points</span><span class="p">]</span>
+<span class="n">neural_signal_impulse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_time_points</span><span class="p">)</span>
+<span class="n">neural_signal_impulse</span><span class="p">[(</span><span class="n">times</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">bold_signal_impulse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">neural_signal_impulse</span><span class="p">,</span> <span class="n">hrf_signal</span><span class="p">)[:</span><span class="n">n_time_points</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">bold_signal_5s</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;5 second event signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">bold_signal_impulse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;impulse event signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;time (seconds)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;bold signal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Output BOLD signal for event 5 seconds long&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//on_convolution-12.png">png</a>, <a class="reference external" href=".//on_convolution-12.hires.png">hires.png</a>, <a class="reference external" href=".//on_convolution-12.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/on_convolution-12.png" src="_images/on_convolution-12.png" />
+</div>
+<p>How did this happen?  The algorithm says that when the convolution gets to
+the position of time == 4 in the input, it finds a value 1, so adds an HRF to
+the output at that position.  It then moves one index along (corresponding to
+0.1 seconds) finds another value 1 and adds another HRF to the output and so
+on until the end of the event, at the time corresponding to 9 seconds - 0.1.
+So the output is the result of adding 50 HRFs, each offset by 0.1 seconds from
+the next.</p>
+<p>Put another way, the convolution says that you will get the same output from
+two events 0.1 seconds apart as you will from one event lasting 0.2 seconds.
+In the case of the 5 second event we are saying that the 5 second event will
+cause the same signal as 50 events all 0.1 seconds apart.  This is the linear
+time invariant assumption.</p>
+<p>When we use convolution we have to keep these assumptions in mind, because
+they may not be reasonable in some situations.</p>
+</div>
+<div class="section" id="more-reading-on-convolution">
+<h3>More reading on convolution<a class="headerlink" href="#more-reading-on-convolution" title="Permalink to this headline">¶</a></h3>
+<p>We can unpack this algorithm a further to show it can be done more efficiently
+in code, and how convolution can be implemented with matrix multiplication
+– see this <a class="reference external" href="http://nbviewer.ipython.org/urls/raw.github.com/practical-neuroimaging/pna-notebooks/master/convolution.ipynb">notebook on convolution</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Convolution</a><ul>
+<li><a class="reference internal" href="#neural-and-hemodynamic-models">Neural and hemodynamic models</a><ul>
+<li><a class="reference internal" href="#the-neural-model">The neural model</a></li>
+<li><a class="reference internal" href="#the-hemodynamic-model">The hemodynamic model</a></li>
+<li><a class="reference internal" href="#convolution-and-the-impulse-response">Convolution and the impulse response</a></li>
+<li><a class="reference internal" href="#convolution-as-adding-responses">Convolution as adding responses</a></li>
+<li><a class="reference internal" href="#convolution-rephrased">Convolution rephrased</a></li>
+<li><a class="reference internal" href="#what-happens-with-a-box-car-instead-of-an-impulse">What happens with a box-car instead of an impulse?</a></li>
+<li><a class="reference internal" href="#more-reading-on-convolution">More reading on convolution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/on_convolution.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+<big><big><big><li><a href="index.html">Home</a> |&nbsp;</li>
+  <li><a href="https://github.com/practical-neuroimaging/pna-notebooks">Notebooks</a> |&nbsp;</li>
+  <li><a href="http://nipy.bic.berkeley.edu/pna">Data</a> |&nbsp;</li>
+  <li><a href="https://calmail.berkeley.edu/manage/list/listinfo/practical_fmri@lists.berkeley.edu">Mailing list</a> |&nbsp;</li></big></big></big>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-2015, Matthew Brett and J-B Poline.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
