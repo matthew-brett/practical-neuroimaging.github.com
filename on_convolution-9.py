@@ -1,5 +1,6 @@
-bold_signal_3 = np.convolve(neural_signal_3, hrf_signal)[:n_time_points_3]
-plt.plot(times_3, bold_signal_3)
+neural_signal[i_time_4:i_time_4 + 5] = 2
+plt.plot(times, neural_signal)
 plt.xlabel('time (seconds)')
-plt.ylabel('bold signal')
-plt.title('Output BOLD signal for larger event at 10 seconds')
+plt.ylabel('neural signal')
+plt.ylim(0, 3.2)
+plt.title('Neural model including event lasting 0.5 seconds')

@@ -1,4 +1,6 @@
-n_hrf_points = len(hrf_signal)
-bold_more_simple = np.zeros(n_time_points)
-bold_more_simple[i_time_4:i_time_4 + n_hrf_points] = hrf_signal
-assert np.all(bold_more_simple == bold_signal)
+neural_signal[i_time_4] = 2  # An impulse with amplitude 2
+plt.plot(times, neural_signal)
+plt.xlabel('time (seconds)')
+plt.ylabel('neural signal')
+plt.ylim(0, 2.2)
+plt.title('Neural model for amplitude 2 impulse')

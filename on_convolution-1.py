@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-times = np.arange(0, 30, 0.1)
+times = np.arange(0, 40, 0.1)
 n_time_points = len(times)
 neural_signal = np.zeros(n_time_points)
 neural_signal[(times >= 4) & (times < 9)] = 1
